@@ -271,6 +271,7 @@ plt.xlabel('Age')
 plt.ylabel('Salary')
 plt.show()
 
+
  {
  "cells": [
   {
