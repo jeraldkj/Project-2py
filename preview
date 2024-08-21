@@ -1,4 +1,277 @@
-{
+
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+import seaborn as sns
+df=pd.read_csv('myexcel.csv')
+df.head()
+Name	Team	Number	Position	Age	Height	Weight	College	Salary
+0	Avery Bradley	Boston Celtics	0	PG	25	06-Feb	180	Texas	7730337.0
+1	Jae Crowder	Boston Celtics	99	SF	25	06-Jun	235	Marquette	6796117.0
+2	John Holland	Boston Celtics	30	SG	27	06-May	205	Boston University	NaN
+3	R.J. Hunter	Boston Celtics	28	SG	22	06-May	185	Georgia State	1148640.0
+4	Jonas Jerebko	Boston Celtics	8	PF	29	06-Oct	231	NaN	5000000.0
+df.describe(include='all')
+Name	Team	Number	Position	Age	Height	Weight	College	Salary
+count	458	458	458.000000	458	458.000000	458	458.000000	374	4.470000e+02
+unique	458	30	NaN	5	NaN	18	NaN	118	NaN
+top	Avery Bradley	New Orleans Pelicans	NaN	SG	NaN	06-Sep	NaN	Kentucky	NaN
+freq	1	19	NaN	102	NaN	59	NaN	22	NaN
+mean	NaN	NaN	17.713974	NaN	26.934498	NaN	221.543668	NaN	4.833970e+06
+std	NaN	NaN	15.966837	NaN	4.400128	NaN	26.343200	NaN	5.226620e+06
+min	NaN	NaN	0.000000	NaN	19.000000	NaN	161.000000	NaN	3.088800e+04
+25%	NaN	NaN	5.000000	NaN	24.000000	NaN	200.000000	NaN	1.025210e+06
+50%	NaN	NaN	13.000000	NaN	26.000000	NaN	220.000000	NaN	2.836186e+06
+75%	NaN	NaN	25.000000	NaN	30.000000	NaN	240.000000	NaN	6.500000e+06
+max	NaN	NaN	99.000000	NaN	40.000000	NaN	307.000000	NaN	2.500000e+07
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 458 entries, 0 to 457
+Data columns (total 9 columns):
+ #   Column    Non-Null Count  Dtype  
+---  ------    --------------  -----  
+ 0   Name      458 non-null    object 
+ 1   Team      458 non-null    object 
+ 2   Number    458 non-null    int64  
+ 3   Position  458 non-null    object 
+ 4   Age       458 non-null    int64  
+ 5   Height    458 non-null    object 
+ 6   Weight    458 non-null    int64  
+ 7   College   374 non-null    object 
+ 8   Salary    447 non-null    float64
+dtypes: float64(1), int64(3), object(5)
+memory usage: 32.3+ KB
+df.isnull().sum()
+Name         0
+Team         0
+Number       0
+Position     0
+Age          0
+Height       0
+Weight       0
+College     84
+Salary      11
+dtype: int64
+df.duplicated().sum()
+0
+df.columns
+Index(['Name', 'Team', 'Number', 'Position', 'Age', 'Height', 'Weight',
+       'College', 'Salary'],
+      dtype='object')
+Changing the data of Height column with random numbers between 150 and 180.
+
+df['Height']=np.random.uniform(150,180,len(df))
+df.head()
+Name	Team	Number	Position	Age	Height	Weight	College	Salary
+0	Avery Bradley	Boston Celtics	0	PG	25	167.193375	180	Texas	7730337.0
+1	Jae Crowder	Boston Celtics	99	SF	25	170.645629	235	Marquette	6796117.0
+2	John Holland	Boston Celtics	30	SG	27	175.088775	205	Boston University	NaN
+3	R.J. Hunter	Boston Celtics	28	SG	22	160.676627	185	Georgia State	1148640.0
+4	Jonas Jerebko	Boston Celtics	8	PF	29	160.453540	231	NaN	5000000.0
+1.How many are there in each Team and the percentage splitting with respect to the total employees.
+count=df['Team'].value_counts()
+count
+Team
+New Orleans Pelicans      19
+Memphis Grizzlies         18
+Utah Jazz                 16
+New York Knicks           16
+Milwaukee Bucks           16
+Brooklyn Nets             15
+Portland Trail Blazers    15
+Oklahoma City Thunder     15
+Denver Nuggets            15
+Washington Wizards        15
+Miami Heat                15
+Charlotte Hornets         15
+Atlanta Hawks             15
+San Antonio Spurs         15
+Houston Rockets           15
+Boston Celtics            15
+Indiana Pacers            15
+Detroit Pistons           15
+Cleveland Cavaliers       15
+Chicago Bulls             15
+Sacramento Kings          15
+Phoenix Suns              15
+Los Angeles Lakers        15
+Los Angeles Clippers      15
+Golden State Warriors     15
+Toronto Raptors           15
+Philadelphia 76ers        15
+Dallas Mavericks          15
+Orlando Magic             14
+Minnesota Timberwolves    14
+Name: count, dtype: int64
+team_len=len(df)
+team_len
+458
+percentage=(count/team_len)*100
+percentage
+Team
+New Orleans Pelicans      4.148472
+Memphis Grizzlies         3.930131
+Utah Jazz                 3.493450
+New York Knicks           3.493450
+Milwaukee Bucks           3.493450
+Brooklyn Nets             3.275109
+Portland Trail Blazers    3.275109
+Oklahoma City Thunder     3.275109
+Denver Nuggets            3.275109
+Washington Wizards        3.275109
+Miami Heat                3.275109
+Charlotte Hornets         3.275109
+Atlanta Hawks             3.275109
+San Antonio Spurs         3.275109
+Houston Rockets           3.275109
+Boston Celtics            3.275109
+Indiana Pacers            3.275109
+Detroit Pistons           3.275109
+Cleveland Cavaliers       3.275109
+Chicago Bulls             3.275109
+Sacramento Kings          3.275109
+Phoenix Suns              3.275109
+Los Angeles Lakers        3.275109
+Los Angeles Clippers      3.275109
+Golden State Warriors     3.275109
+Toronto Raptors           3.275109
+Philadelphia 76ers        3.275109
+Dallas Mavericks          3.275109
+Orlando Magic             3.056769
+Minnesota Timberwolves    3.056769
+Name: count, dtype: float64
+2.Segregate the employees w.r.t different positions.
+grouped_pos=df.groupby('Position')
+for position, position_data in grouped_pos:
+    print(f"Position: {position}")
+    print(position_data[['Name', 'Team',]])
+    
+Position: C
+                Name                    Team
+7       Kelly Olynyk          Boston Celtics
+10   Jared Sullinger          Boston Celtics
+14      Tyler Zeller          Boston Celtics
+23       Brook Lopez           Brooklyn Nets
+27        Henry Sims           Brooklyn Nets
+..               ...                     ...
+439    Mason Plumlee  Portland Trail Blazers
+447      Rudy Gobert               Utah Jazz
+455     Tibor Pleiss               Utah Jazz
+456      Jeff Withey               Utah Jazz
+457         Priyanka               Utah Jazz
+
+[79 rows x 2 columns]
+Position: PF
+                 Name                    Team
+4       Jonas Jerebko          Boston Celtics
+5        Amir Johnson          Boston Celtics
+6       Jordan Mickey          Boston Celtics
+24   Chris McCullough           Brooklyn Nets
+25        Willie Reed           Brooklyn Nets
+..                ...                     ...
+435    Meyers Leonard  Portland Trail Blazers
+441       Noah Vonleh  Portland Trail Blazers
+442     Trevor Booker               Utah Jazz
+446    Derrick Favors               Utah Jazz
+452        Trey Lyles               Utah Jazz
+
+[100 rows x 2 columns]
+Position: PG
+              Name                    Team
+0    Avery Bradley          Boston Celtics
+8     Terry Rozier          Boston Celtics
+9     Marcus Smart          Boston Celtics
+11   Isaiah Thomas          Boston Celtics
+19    Jarrett Jack           Brooklyn Nets
+..             ...                     ...
+440  Brian Roberts  Portland Trail Blazers
+443     Trey Burke               Utah Jazz
+445     Dante Exum               Utah Jazz
+453   Shelvin Mack               Utah Jazz
+454      Raul Neto               Utah Jazz
+
+[92 rows x 2 columns]
+Position: SF
+                       Name                    Team
+1               Jae Crowder          Boston Celtics
+32   Thanasis Antetokounmpo         New York Knicks
+33          Carmelo Anthony         New York Knicks
+35         Cleanthony Early         New York Knicks
+42             Lance Thomas         New York Knicks
+..                      ...                     ...
+428         Al-Farouq Aminu  Portland Trail Blazers
+432        Maurice Harkless  Portland Trail Blazers
+448          Gordon Hayward               Utah Jazz
+450              Joe Ingles               Utah Jazz
+451           Chris Johnson               Utah Jazz
+
+[85 rows x 2 columns]
+Position: SG
+                 Name                    Team
+2        John Holland          Boston Celtics
+3         R.J. Hunter          Boston Celtics
+12        Evan Turner          Boston Celtics
+13        James Young          Boston Celtics
+15   Bojan Bogdanovic           Brooklyn Nets
+..                ...                     ...
+433  Gerald Henderson  Portland Trail Blazers
+437     C.J. McCollum  Portland Trail Blazers
+438      Luis Montero  Portland Trail Blazers
+444        Alec Burks               Utah Jazz
+449       Rodney Hood               Utah Jazz
+
+[102 rows x 2 columns]
+3.Find from which age group most of the employees belong to.
+age_count=df['Age'].value_counts()
+age_count
+Age
+24    47
+25    46
+27    41
+23    41
+26    36
+28    31
+30    31
+29    28
+22    26
+31    22
+20    19
+21    19
+33    14
+32    13
+34    10
+36    10
+35     9
+37     4
+38     4
+40     3
+39     2
+19     2
+Name: count, dtype: int64
+print(f"common age group:{age_count.idxmax()} number of employees:{age_count.max()}")
+common age group:24 number of employees:47
+4.Find out under which team and position, spending in terms of salary is high.
+group_team_position = df.groupby(['Team', 'Position'])['Salary'].sum()
+team_position=group_team_position.idxmax()
+high_salary=group_team_position.max()
+print(f"Team and position with highest salary:{team_position} Highest salary:{high_salary}")
+Team and position with highest salary:('Los Angeles Lakers', 'SF') Highest salary:31866445.0
+5.Find if there is any correlation between age and salary , represent it visually.
+correlation = df['Age'].corr(df['Salary'])
+print(f"Correlation between Age and Salary is {correlation}")
+if correlation<=0:
+    print("It is a Negative correlation")
+else:
+    print("It is a Positive correlation")
+Correlation between Age and Salary is 0.2140094122657097
+It is a Positive correlation
+plt.scatter(df['Age'], df['Salary'])
+plt.title('Scatter Plot of Age vs Salary')
+plt.xlabel('Age')
+plt.ylabel('Salary')
+plt.show()
+
+ {
  "cells": [
   {
    "cell_type": "code",
